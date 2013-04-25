@@ -26,6 +26,8 @@ module Archive
       free_archive
     end
 
+    protected
+
     def configure_archive
       @archive = LibArchive.archive_write_new
       LibArchive.enable_output_compression(@archive, @compression)
@@ -41,6 +43,8 @@ module Archive
 
       files.reject { |f| f == filename }.each do |file|
         next if file == filename
+
+        # TODO return value maybe?
         puts file if verbose
 
         entry = LibArchive.archive_entry_new

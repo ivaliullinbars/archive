@@ -32,6 +32,8 @@ module Archive
       close
     end
 
+    protected
+
     def create_io_objects
       @in = LibArchive.archive_read_new
       @out = LibArchive.archive_write_disk_new
