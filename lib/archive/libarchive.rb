@@ -4,6 +4,21 @@ module Archive
   module LibArchive
     extend FFI::Library
 
+
+    #
+    # needed by archiving entry functions
+    #
+    ffi_lib FFI::Library::LIBC
+
+    begin
+      attach_function :stat64, [:string, :pointer], :int
+      def self.stat(string, pointer)
+        stat64(string, pointer)
+      end
+    rescue FFI::NotFoundError
+      attach_function :stat, [:string, :pointer], :int
+    end
+
     ffi_lib 'archive'
 
     ARCHIVE_OK      = 0
@@ -88,6 +103,7 @@ module Archive
     attach_function :archive_entry_new, [], :pointer
     attach_function :archive_entry_set_pathname, [:pointer, :string], :void
     attach_function :archive_entry_free, [:pointer], :void
+    attach_function :archive_read_disk_entry_from_file, [:pointer, :pointer, :int, :pointer], :void
 
     attach_function :archive_error_string, [:pointer], :string
     attach_function :archive_read_next_header, [:pointer, :pointer], :int
@@ -114,5 +130,6 @@ module Archive
 
     attach_function :archive_read_data_block, [:pointer, :pointer, :pointer, :pointer], :int
     attach_function :archive_write_data_block, [:pointer, :pointer, :size_t, :long_long], :int
+    attach_function :archive_write_data, [:pointer, :pointer, :size_t], :void
   end
 end

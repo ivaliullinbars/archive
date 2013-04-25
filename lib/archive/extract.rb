@@ -63,6 +63,7 @@ module Archive
         unpack_loop
 
         LibArchive.archive_write_finish_entry(@out)
+        # FIXME entry free here?
       end
     end
 
