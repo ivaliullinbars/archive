@@ -18,6 +18,9 @@ module Archive
     ARCHIVE_EXTRACT_TIME            = 0x0004
 
     attach_function :archive_read_new, [], :pointer
+    attach_function :archive_read_disk_new, [], :pointer
+    attach_function :archive_read_disk_set_standard_lookup, [:pointer], :void
+    attach_function :archive_write_new, [], :pointer
     attach_function :archive_write_disk_new, [], :pointer
     attach_function :archive_write_disk_set_options, [:pointer, :int], :void
     attach_function :archive_read_support_format_tar, [:pointer], :void
@@ -29,6 +32,18 @@ module Archive
       archive_read_support_format_zip(arg)
       archive_read_support_format_zip(arg)
       enable_input_compression(arg)
+    end
+
+    attach_function :archive_write_set_format_ustar, [:pointer], :void
+    attach_function :archive_write_set_format_zip, [:pointer], :void
+
+    def self.enable_output_archive(arg, type=:tar)
+      case type
+      when :tar
+        archive_write_set_format_ustar(arg)
+      when :zip
+        archive_write_set_format_zip(arg)
+      end
     end
 
     begin
@@ -43,21 +58,60 @@ module Archive
       end
     end
 
+    begin
+      attach_function :archive_write_add_filter_gzip, [:pointer], :void
+      attach_function :archive_write_add_filter_bzip2, [:pointer], :void
+      def self.enable_output_compression(arg, type=:gzip)
+        case type
+        when :gzip
+          archive_write_add_filter_gzip(arg)
+        when :bzip2
+          archive_write_add_filter_bzip2(arg)
+        end
+      end
+    rescue FFI::NotFoundError
+      attach_function :archive_write_set_compression_gzip, [:pointer], :void
+      attach_function :archive_write_set_compression_bzip2, [:pointer], :void
+      def self.enable_output_compression(arg, type=:gzip)
+        case type
+        when :gzip
+          archive_write_set_compression_gzip(arg)
+        when :bzip2
+          archive_write_set_compression_bzip2(arg)
+        end
+      end
+    end
+
     attach_function :archive_read_open_filename, [:pointer, :string, :size_t], :int
+    attach_function :archive_write_open_filename, [:pointer, :string], :int
+
+    attach_function :archive_entry_new, [], :pointer
+    attach_function :archive_entry_set_pathname, [:pointer, :string], :void
+    attach_function :archive_entry_free, [:pointer], :void
+
     attach_function :archive_error_string, [:pointer], :string
     attach_function :archive_read_next_header, [:pointer, :pointer], :int
     attach_function :archive_entry_pathname, [:pointer], :string
     attach_function :archive_write_header, [:pointer, :pointer], :int
     attach_function :archive_write_finish_entry, [:pointer], :int
     attach_function :archive_read_close, [:pointer], :void
+    attach_function :archive_write_close, [:pointer], :void
+
     begin
       attach_function :archive_read_free, [:pointer], :void
+      attach_function :archive_write_free, [:pointer], :void
     rescue FFI::NotFoundError
       attach_function :archive_read_finish, [:pointer], :void
       def self.archive_read_free(arg)
         archive_read_finish(arg)
       end
+
+      attach_function :archive_write_finish, [:pointer], :void
+      def self.archive_write_free(arg)
+        archive_write_finish(arg)
+      end
     end
+
     attach_function :archive_read_data_block, [:pointer, :pointer, :pointer, :pointer], :int
     attach_function :archive_write_data_block, [:pointer, :pointer, :size_t, :long_long], :int
   end
