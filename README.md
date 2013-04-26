@@ -26,8 +26,6 @@ Or install it yourself as:
 
 ## Usage
 
-Example of the easy API:
-
 ```ruby
 # stuff the contents of $HOME in /tmp/tmp.tar.gz
 Archive.compress("/tmp/tmp.tar.gz", ENV["HOME"])
