@@ -24,6 +24,12 @@ Or install it yourself as:
 
     $ gem install archive
 
+You will also need a copy of 'libarchive'. This comes with some operating
+systems (OS X, mingw builds on windows) and others you have to use your package
+manager to install them. It is not required to install the gem, but to use it.
+
+You will also need a compiler to install FFI.
+
 ## Usage
 
 ```ruby
