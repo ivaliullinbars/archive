@@ -1,3 +1,5 @@
+require 'pathname'
+
 module Archive # :nodoc:
   #
   # Compression OOP interface for Archive. See ::new and #compress for more information.
@@ -73,9 +75,10 @@ module Archive # :nodoc:
       stat = FFI::MemoryPointer.new :pointer
       buff = FFI::Buffer.new BUFSIZE
 
-      files.reject { |f| f == filename }.each do |file|
-        next if file == filename
+      # truncate our archive, this solves a few issues.
+      File.open(filename, 'w').close
 
+      files.reject { |f| Pathname.new(f).realpath == Pathname.new(filename).realpath }.each do |file|
         # TODO return value maybe?
         puts file if verbose
 
