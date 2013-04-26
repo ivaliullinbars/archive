@@ -1,24 +1,10 @@
 require 'helper'
-require 'tempfile'
-require 'fileutils'
 
-class TestExtract < MiniTest::Unit::TestCase
+class TestExtract < ArchiveTestCase
   include FileUtils
 
   def setup
     @klass = Archive::Extract
-  end
-
-  def extract_tmp(filename)
-    dir = Dir.mktmpdir
-    @klass.new(filename, dir).extract
-    return dir
-  end
-
-  def assert_no_difference(path1, path2)
-    args = %w[diff -rq] + [path1, path2]
-    system(*args)
-    assert_equal(0, $?.exitstatus)
   end
 
   def test_constructor
