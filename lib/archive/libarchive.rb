@@ -107,7 +107,6 @@ module Archive
 
     attach_function :archive_error_string, [:pointer], :string
     attach_function :archive_read_next_header, [:pointer, :pointer], :int
-    attach_function :archive_entry_pathname, [:pointer], :string
     attach_function :archive_write_header, [:pointer, :pointer], :int
     attach_function :archive_write_finish_entry, [:pointer], :int
     attach_function :archive_read_close, [:pointer], :void
@@ -131,5 +130,8 @@ module Archive
     attach_function :archive_read_data_block, [:pointer, :pointer, :pointer, :pointer], :int
     attach_function :archive_write_data_block, [:pointer, :pointer, :size_t, :long_long], :int
     attach_function :archive_write_data, [:pointer, :pointer, :size_t], :void
+
+    attach_function :archive_entry_pathname, [:pointer], :string
+    attach_function :archive_entry_set_pathname, [:pointer, :string], :void
   end
 end

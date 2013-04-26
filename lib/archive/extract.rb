@@ -25,9 +25,7 @@ module Archive
       create_io_objects
       open_file
 
-      Dir.chdir(@dir) do
-        header_loop(verbose)
-      end
+      header_loop(verbose)
 
       close
     end
@@ -54,6 +52,9 @@ module Archive
         if result != LibArchive::ARCHIVE_OK
           raise LibArchive.archive_error_string(result)
         end
+
+        full_path = File.join(@dir, LibArchive.archive_entry_pathname(entry_pointer))
+        LibArchive.archive_entry_set_pathname(entry_pointer, full_path)
 
         # TODO return value maybe?
         puts LibArchive.archive_entry_pathname(entry_pointer) if verbose
