@@ -43,4 +43,30 @@ class TestExtract < MiniTest::Unit::TestCase
       rm_rf(path)
     end
   end
+
+  def test_obscene_multithreading
+    %w[zip tar.gz tar.bz2].each do |ext|
+      thr = (1..30).map do
+        Thread.new do
+          extract_tmp("test/data/libarchive.#{ext}")
+        end
+      end
+
+      path = nil
+
+      thr.each do |t|
+        begin
+          path = t.value
+          assert(path)
+          full_dir = File.join(path, "libarchive")
+          assert(File.directory?(full_dir))
+          assert_no_difference("test/data/libarchive", full_dir)
+        ensure
+          unless !path or path.empty? or path == '/' or path == Dir.pwd
+            rm_rf(path)
+          end
+        end
+      end
+    end
+  end
 end
