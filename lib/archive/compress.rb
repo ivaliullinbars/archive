@@ -66,13 +66,17 @@ module Archive # :nodoc:
       @archive = LibArchive.archive_write_new
       LibArchive.enable_output_compression(@archive, @compression)
       LibArchive.enable_output_archive(@archive, @type)
-      LibArchive.archive_write_open_filename(@archive, @filename)
+
+      result = LibArchive.archive_write_open_filename(@archive, @filename)
+      if result != LibArchive::ARCHIVE_OK
+        raise LibArchive.archive_error_string(@archive)
+      end
+
       @disk = LibArchive.archive_read_disk_new
       LibArchive.archive_read_disk_set_standard_lookup(@disk)
     end
 
     def compress_files(files, verbose) # :nodoc:
-      stat = FFI::MemoryPointer.new :pointer
       buff = FFI::Buffer.new BUFSIZE
 
       # truncate our archive, this solves a few issues.
@@ -82,20 +86,29 @@ module Archive # :nodoc:
         # TODO return value maybe?
         puts file if verbose
 
+        stat = FFI::MemoryPointer.new Stat, 1, true
         entry = LibArchive.archive_entry_new
 
         LibArchive.archive_entry_set_pathname(entry, file)
-        LibArchive.stat(file, stat.get_pointer(0))
-        LibArchive.archive_read_disk_entry_from_file(@disk, entry, -1, stat.get_pointer(0))
-        LibArchive.archive_write_header(@archive, entry)
+        result = LibArchive.stat64(File.join(Dir.pwd, file), stat)
+
+        if result != 0
+          raise "Error while calling stat(): #{LibArchive.strerror(FFI.errno)}"
+        end
+
+        LibArchive.archive_read_disk_entry_from_file(@disk, entry, -1, stat)
+
+        result = LibArchive.archive_write_header(@archive, entry)
+
+        if result != LibArchive::ARCHIVE_OK
+          raise "archive error: #{LibArchive.archive_error_string(@archive)}"
+        end
 
         File.open(file, 'r') do |f|
           loop do
-            str = f.read(BUFSIZE)
-            break unless str and str.length > 0
-            str.force_encoding("BINARY")
-            buff.put_bytes(0, str)
-            LibArchive.archive_write_data(@archive, buff, str.length)
+            len = FFI::IO.native_read(f, buff, BUFSIZE)
+            LibArchive.archive_write_data(@archive, buff, len)
+            break if f.eof?
           end
         end
 

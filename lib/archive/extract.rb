@@ -68,11 +68,11 @@ module Archive # :nodoc:
     def header_loop(verbose) # :nodoc:
       while ((result = LibArchive.archive_read_next_header(@in, @entry)) != LibArchive::ARCHIVE_EOF)
 
-        entry_pointer = @entry.get_pointer(0)
-
         if result != LibArchive::ARCHIVE_OK
-          raise LibArchive.archive_error_string(result)
+          raise LibArchive.archive_error_string(@in)
         end
+
+        entry_pointer = @entry.get_pointer(0)
 
         full_path = File.join(@dir, LibArchive.archive_entry_pathname(entry_pointer))
         LibArchive.archive_entry_set_pathname(entry_pointer, full_path)
@@ -81,7 +81,7 @@ module Archive # :nodoc:
         puts LibArchive.archive_entry_pathname(entry_pointer) if verbose
 
         if ((result = LibArchive.archive_write_header(@out, entry_pointer)) != LibArchive::ARCHIVE_OK)
-          raise LibArchive.archive_error_string(result)
+          raise LibArchive.archive_error_string(@out)
         end
 
         unpack_loop
@@ -101,13 +101,13 @@ module Archive # :nodoc:
         break if result == LibArchive::ARCHIVE_EOF
 
         unless result == LibArchive::ARCHIVE_OK
-          raise LibArchive.archive_error_string(result)
+          raise LibArchive.archive_error_string(@in)
         end
 
         result = LibArchive.archive_write_data_block(@out, buffer.get_pointer(0), size.read_ulong_long, offset.read_long_long);
 
         if result != LibArchive::ARCHIVE_OK
-          raise LibArchive.archive_error_string(result)
+          raise LibArchive.archive_error_string(@out)
         end
       end
     end

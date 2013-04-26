@@ -1,6 +1,53 @@
 require 'ffi'
 
 module Archive # :nodoc:
+  class Stat < FFI::Struct # :nodoc:
+    class Timespec < FFI::Struct
+      layout :tv_sec, :long,
+             :tv_nsec, :long
+    end
+
+    if FFI::Platform.mac?
+      layout(
+        :st_dev, :dev_t,
+        :st_mode, :mode_t,
+        :st_nlink, :nlink_t,
+        :st_ino, :ino_t,
+        :st_uid, :uid_t,
+        :st_gid, :gid_t,
+        :st_rdev, :dev_t,
+        :st_atimespec, Timespec,
+        :st_mtimespec, Timespec,
+        :st_ctimespec, Timespec,
+        :st_birthtimespec, Timespec,
+        :st_size, :off_t,
+        :st_blocks, :quad_t,
+        :st_blksize, :ulong,
+        :st_flags, :ulong,
+        :st_gen, :ulong,
+        :st_lspare, :long,
+        :st_qspare, :long_long
+      )
+    else
+      layout(
+        :st_dev, :dev_t,
+        :st_ino, :ino_t,
+        :st_mode, :mode_t,
+        :st_nlink, :nlink_t,
+        :st_uid, :uid_t,
+        :st_gid, :gid_t,
+        :st_rdev, :dev_t,
+        :st_atimespec, Timespec,
+        :st_mtimespec, Timespec,
+        :st_ctimespec, Timespec,
+        :st_size, :off_t,
+        :st_blocks, :quad_t,
+        :st_blksize, :ulong,
+        :st_flags, :ulong,
+        :st_gen, :ulong
+      )
+    end
+  end
   module LibArchive # :nodoc:
     #--
     # this is necessary to pass rdoc's coverage tests
@@ -17,12 +64,14 @@ module Archive # :nodoc:
     #
     ffi_lib ::FFI::Library::LIBC
 
-    begin
+    attach_function :strerror, [:int], :string
+
+    if FFI::Platform.mac?
       attach_function :stat64, [:string, :pointer], :int
-      def self.stat(string, pointer) # :nodoc:
-        stat64(string, pointer)
+      def self.stat(*args) # :nodoc:
+        stat64(*args)
       end
-    rescue ::FFI::NotFoundError
+    else
       attach_function :stat, [:string, :pointer], :int
     end
 
@@ -109,7 +158,7 @@ module Archive # :nodoc:
 
     attach_function :archive_entry_new, [], :pointer
     attach_function :archive_entry_free, [:pointer], :void
-    attach_function :archive_read_disk_entry_from_file, [:pointer, :pointer, :int, :pointer], :void
+    attach_function :archive_read_disk_entry_from_file, [:pointer, :pointer, :int, :pointer], :int
 
     attach_function :archive_error_string, [:pointer], :string
     attach_function :archive_read_next_header, [:pointer, :pointer], :int
