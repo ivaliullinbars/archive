@@ -52,6 +52,29 @@ ae = Archive::Extract.new("/tmp/tmp.tar.gz", "/tmp/woot")
 ae.extract
 ```
 
+## Testing
+
+Tests do not come with the gem because of file sizes of the archives and test
+data in the repository.
+
+Tests require bundler. Run `bundle exec rake test` to run the tests.
+
+We have verified that archive works as intended on these platforms:
+
+* Mac OS X 10.8
+* Ubuntu Linux 12.04 LTS
+
+And these Rubies:
+
+* 1.9.3
+* 2.0.0
+* JRuby 1.7 with Java 7
+
+Please let us know if your operating system isn't working! It'll likely
+complain about a call called `stat` which varies wildly on different POSIX
+systems. We just need to know what platform you're on and how we can install it
+ourselves to move forward. Thanks!
+
 ## Contributing
 
 1. Fork it
