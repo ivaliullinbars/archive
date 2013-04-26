@@ -7,7 +7,7 @@ module Archive # :nodoc:
              :tv_nsec, :long
     end
 
-    if FFI::Platform.mac?
+    if ::FFI::Platform.mac?
       layout(
         :st_dev, :dev_t,
         :st_mode, :mode_t,
@@ -66,7 +66,7 @@ module Archive # :nodoc:
 
     attach_function :strerror, [:int], :string
 
-    if FFI::Platform.mac?
+    if ::FFI::Platform.mac?
       attach_function :stat64, [:string, :pointer], :int
       def self.stat(*args) # :nodoc:
         stat64(*args)
