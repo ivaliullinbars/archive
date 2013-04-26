@@ -66,7 +66,6 @@ module Archive
         unpack_loop
 
         LibArchive.archive_write_finish_entry(@out)
-        # FIXME entry free here?
       end
     end
 
@@ -95,6 +94,8 @@ module Archive
     def close
       LibArchive.archive_read_close(@in)
       LibArchive.archive_read_free(@in)
+      LibArchive.archive_write_close(@out)
+      LibArchive.archive_write_free(@out)
       @in = nil
       @out = nil
       @entry = nil
