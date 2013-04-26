@@ -60,20 +60,24 @@ module Archive
     Archive::Compress.new(filename, args).compress(get_files(dir), true)
   end
 
-  protected
+  class << self
 
-  #
-  # Finds the files for the dir passed to ::compress.
-  #
-  def self.get_files(dir)
-    require 'find'
+    protected
 
-    files = []
+    #
+    # Finds the files for the dir passed to ::compress.
+    #
+    def get_files(dir)
+      require 'find'
 
-    Find.find(dir) do |path|
-      files.push(path) if File.file?(path)
+      files = []
+
+      Find.find(dir) do |path|
+        files.push(path) if File.file?(path)
+      end
+
+      return files
     end
 
-    return files
   end
 end
