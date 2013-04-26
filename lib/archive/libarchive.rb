@@ -1,36 +1,43 @@
 require 'ffi'
 
-module Archive
-  module LibArchive
-    extend FFI::Library
+module Archive # :nodoc:
+  module LibArchive # :nodoc:
+    #--
+    # this is necessary to pass rdoc's coverage tests
+    #++
+    module FFI # :nodoc:
+      module Library # :nodoc:
+      end
+    end
 
+    extend ::FFI::Library # :nodoc:
 
     #
     # needed by archiving entry functions
     #
-    ffi_lib FFI::Library::LIBC
+    ffi_lib ::FFI::Library::LIBC
 
     begin
       attach_function :stat64, [:string, :pointer], :int
-      def self.stat(string, pointer)
+      def self.stat(string, pointer) # :nodoc:
         stat64(string, pointer)
       end
-    rescue FFI::NotFoundError
+    rescue ::FFI::NotFoundError
       attach_function :stat, [:string, :pointer], :int
     end
 
     ffi_lib 'archive'
 
-    ARCHIVE_OK      = 0
-    ARCHIVE_EOF     = 1
-    ARCHIVE_RETRY   = -10
-    ARCHIVE_WARN    = -20
-    ARCHIVE_FAILED  = -25
-    ARCHIVE_FATAL   = -30
+    ARCHIVE_OK      = 0     # :nodoc:
+    ARCHIVE_EOF     = 1     # :nodoc:
+    ARCHIVE_RETRY   = -10   # :nodoc:
+    ARCHIVE_WARN    = -20   # :nodoc:
+    ARCHIVE_FAILED  = -25   # :nodoc:
+    ARCHIVE_FATAL   = -30   # :nodoc:
 
-    ARCHIVE_EXTRACT_OWNER           = 0x0001
-    ARCHIVE_EXTRACT_PERM            = 0x0002
-    ARCHIVE_EXTRACT_TIME            = 0x0004
+    ARCHIVE_EXTRACT_OWNER           = 0x0001 # :nodoc:
+    ARCHIVE_EXTRACT_PERM            = 0x0002 # :nodoc:
+    ARCHIVE_EXTRACT_TIME            = 0x0004 # :nodoc:
 
     attach_function :archive_read_new, [], :pointer
     attach_function :archive_read_disk_new, [], :pointer
@@ -42,7 +49,7 @@ module Archive
     attach_function :archive_read_support_format_gnutar, [:pointer], :void
     attach_function :archive_read_support_format_zip, [:pointer], :void
 
-    def self.enable_input_formats(arg)
+    def self.enable_input_formats(arg) # :nodoc:
       archive_read_support_format_gnutar(arg)
       archive_read_support_format_zip(arg)
       archive_read_support_format_zip(arg)
@@ -63,12 +70,12 @@ module Archive
 
     begin
       attach_function :archive_read_support_filter_all, [:pointer], :void
-      def self.enable_input_compression(arg)
+      def self.enable_input_compression(arg) # :nodoc:
         archive_read_support_filter_all(arg)
       end
-    rescue FFI::NotFoundError
+    rescue ::FFI::NotFoundError
       attach_function :archive_read_support_compression_all, [:pointer], :void
-      def self.enable_input_compression(arg)
+      def self.enable_input_compression(arg) # :nodoc:
         archive_read_support_compression_all(arg)
       end
     end
@@ -76,7 +83,7 @@ module Archive
     begin
       attach_function :archive_write_add_filter_gzip, [:pointer], :void
       attach_function :archive_write_add_filter_bzip2, [:pointer], :void
-      def self.enable_output_compression(arg, type=:gzip)
+      def self.enable_output_compression(arg, type=:gzip) # :nodoc:
         case type
         when :gzip
           archive_write_add_filter_gzip(arg)
@@ -84,10 +91,10 @@ module Archive
           archive_write_add_filter_bzip2(arg)
         end
       end
-    rescue FFI::NotFoundError
+    rescue ::FFI::NotFoundError
       attach_function :archive_write_set_compression_gzip, [:pointer], :void
       attach_function :archive_write_set_compression_bzip2, [:pointer], :void
-      def self.enable_output_compression(arg, type=:gzip)
+      def self.enable_output_compression(arg, type=:gzip) # :nodoc:
         case type
         when :gzip
           archive_write_set_compression_gzip(arg)
@@ -114,14 +121,14 @@ module Archive
     begin
       attach_function :archive_read_free, [:pointer], :void
       attach_function :archive_write_free, [:pointer], :void
-    rescue FFI::NotFoundError
+    rescue ::FFI::NotFoundError
       attach_function :archive_read_finish, [:pointer], :void
-      def self.archive_read_free(arg)
+      def self.archive_read_free(arg) # :nodoc:
         archive_read_finish(arg)
       end
 
       attach_function :archive_write_finish, [:pointer], :void
-      def self.archive_write_free(arg)
+      def self.archive_write_free(arg) # :nodoc:
         archive_write_finish(arg)
       end
     end

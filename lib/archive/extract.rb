@@ -1,9 +1,26 @@
-module Archive
+module Archive # :nodoc:
+  #
+  # Extraction OOP interface for Archive. See ::new and #extract for more information.
+  #
   class Extract
 
+    # The filename of the compressed archive. See ::new.
     attr_reader :filename
+    # The extraction directory target. See ::new.
     attr_reader :dir
 
+    #
+    # Create a new Extract object. Takes a filename as string containing the
+    # archive name, and a directory name as string containing the target path
+    # to extract to. The default target is the current directory.
+    #
+    # If either the filename or directory name do not already exist,
+    # ArgumentError will be raised.
+    #
+    # Extraction tries to preserve timestamps and permissions, but not uid/gid.
+    # Note that this is format-dependent -- e.g., .zip files will always be
+    # extracted as mode 0777.
+    #
     def initialize(filename, dir=Dir.pwd)
       unless File.exist?(filename)
         raise ArgumentError, "File '#{filename}' does not exist!"
@@ -21,6 +38,10 @@ module Archive
         LibArchive::ARCHIVE_EXTRACT_TIME
     end
 
+    #
+    # Perform the extraction. Takes an optional value that when true prints
+    # each filename extracted to stdout.
+    #
     def extract(verbose=false)
       create_io_objects
       open_file
@@ -32,7 +53,7 @@ module Archive
 
     protected
 
-    def create_io_objects
+    def create_io_objects # :nodoc:
       @in = LibArchive.archive_read_new
       @out = LibArchive.archive_write_disk_new
       LibArchive.archive_write_disk_set_options(@out, @extract_flags)
@@ -40,11 +61,11 @@ module Archive
       LibArchive.enable_input_formats(@in)
     end
 
-    def open_file
+    def open_file # :nodoc:
       LibArchive.archive_read_open_filename(@in, @filename, 10240)
     end
 
-    def header_loop(verbose)
+    def header_loop(verbose) # :nodoc:
       while ((result = LibArchive.archive_read_next_header(@in, @entry)) != LibArchive::ARCHIVE_EOF)
 
         entry_pointer = @entry.get_pointer(0)
@@ -69,7 +90,7 @@ module Archive
       end
     end
 
-    def unpack_loop
+    def unpack_loop # :nodoc:
       loop do
         buffer = FFI::MemoryPointer.new :pointer, 1
         size   = FFI::MemoryPointer.new :size_t
@@ -91,7 +112,7 @@ module Archive
       end
     end
 
-    def close
+    def close # :nodoc:
       LibArchive.archive_read_close(@in)
       LibArchive.archive_read_free(@in)
       LibArchive.archive_write_close(@out)
