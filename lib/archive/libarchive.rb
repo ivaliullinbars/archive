@@ -76,6 +76,11 @@ module Archive # :nodoc:
       def self.stat(*args) # :nodoc:
         stat64(*args)
       end
+    elsif RbConfig::CONFIG['host_os'] =~ /linux/
+      attach_function :__xstat, [:int, :string, :pointer], :int
+      def self.stat(*args) # :nodoc:
+        __xstat(0, *args)
+      end
     else
       attach_function :stat, [:string, :pointer], :int
     end
