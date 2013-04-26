@@ -101,7 +101,6 @@ module Archive
     attach_function :archive_write_open_filename, [:pointer, :string], :int
 
     attach_function :archive_entry_new, [], :pointer
-    attach_function :archive_entry_set_pathname, [:pointer, :string], :void
     attach_function :archive_entry_free, [:pointer], :void
     attach_function :archive_read_disk_entry_from_file, [:pointer, :pointer, :int, :pointer], :void
 
