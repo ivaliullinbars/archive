@@ -1,13 +1,13 @@
 require 'ffi'
 
 module Archive # :nodoc:
-  class Stat < FFI::Struct # :nodoc:
+  class Stat < ::FFI::Struct # :nodoc:
     #--
     # this is necessary to pass rdoc's coverage tests
     #++
     module FFI # :nodoc:
     end
-    class Timespec < FFI::Struct
+    class Timespec < ::FFI::Struct
       layout :tv_sec, :long,
              :tv_nsec, :long
     end
