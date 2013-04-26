@@ -90,7 +90,7 @@ module Archive # :nodoc:
         entry = LibArchive.archive_entry_new
 
         LibArchive.archive_entry_set_pathname(entry, file)
-        result = LibArchive.stat64(File.join(Dir.pwd, file), stat)
+        result = LibArchive.stat(File.join(Dir.pwd, file), stat)
 
         if result != 0
           raise "Error while calling stat(): #{LibArchive.strerror(FFI.errno)}"
