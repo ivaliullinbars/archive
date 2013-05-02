@@ -74,6 +74,15 @@ And these Rubies:
 * 2.0.0
 * JRuby 1.7 with Java 7
 
+It does not work on these platforms:
+
+* SmartOS "base64 1.9.1". The version of libarchive they distribute via pkgsrc
+	is broken, see this URL: 
+
+  http://freebsd.1045724.n5.nabble.com/Extracting-tgz-file-Attempt-to-write-to-an-empty-file-td3910927.html
+
+  Regardless, installing a newer libarchive by hand will likely fix this issue.
+
 Please let us know if your operating system isn't working! It'll likely
 complain about a call called `stat` which varies wildly on different POSIX
 systems. We just need to know what platform you're on and how we can install it
