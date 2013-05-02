@@ -46,7 +46,7 @@ module Archive # :nodoc:
         :st_mtimespec, Timespec,
         :st_ctimespec, Timespec,
         :st_size, :off_t,
-        :st_blocks, :quad_t,
+        :st_blocks, :blkcnt_t,
         :st_blksize, :ulong,
         :st_flags, :ulong,
         :st_gen, :ulong
