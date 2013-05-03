@@ -93,8 +93,8 @@ module Archive # :nodoc:
     def unpack_loop # :nodoc:
       loop do
         buffer = FFI::MemoryPointer.new :pointer, 1
-        size   = FFI::MemoryPointer.new :size_t
-        offset = FFI::MemoryPointer.new :long_long
+        size   = FFI::MemoryPointer.new :ulong_long, 1
+        offset = FFI::MemoryPointer.new :long_long, 1
 
         result = LibArchive.archive_read_data_block(@in, buffer, size, offset)
 
@@ -104,7 +104,7 @@ module Archive # :nodoc:
           raise LibArchive.archive_error_string(@in)
         end
 
-        result = LibArchive.archive_write_data_block(@out, buffer.get_pointer(0), size.read_ulong_long, offset.read_long_long);
+        result = LibArchive.archive_write_data_block(@out, buffer.read_pointer, size.read_ulong_long, offset.read_long_long);
 
         if result != LibArchive::ARCHIVE_OK
           raise LibArchive.archive_error_string(@out)
