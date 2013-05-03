@@ -33,6 +33,27 @@ module Archive # :nodoc:
         :st_lspare, :long,
         :st_qspare, :long_long
       )
+    elsif ::FFI::Platform.bsd?
+      layout(
+        :st_dev, :dev_t,
+        :st_ino, :ino_t,
+        :st_mode, :mode_t,
+        :st_nlink, :nlink_t,
+        :st_uid, :uid_t,
+        :st_gid, :gid_t,
+        :st_rdev, :dev_t,
+        :st_atimespec, Timespec,
+        :st_mtimespec, Timespec,
+        :st_ctimespec, Timespec,
+        :st_size, :off_t,
+        :st_blocks, :long_long,
+        :st_blksize, :ulong_long,
+        :st_flags, :ulong,
+        :st_gen, :ulong,
+        :st_lspare, :long,
+        :st_birthtimespec, Timespec,
+        :st_qspare, :long_long
+      )
     else
       layout(
         :st_dev, :dev_t,
