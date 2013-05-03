@@ -67,6 +67,7 @@ We have verified that archive works as intended on these platforms:
 
 * Mac OS X 10.8
 * Ubuntu Linux 12.04 LTS
+* FreeBSD 9
 
 And these Rubies:
 
@@ -84,9 +85,9 @@ It does not work on these platforms:
   Regardless, installing a newer libarchive by hand will likely fix this issue.
 
 Please let us know if your operating system isn't working! It'll likely
-complain about a call called `stat` which varies wildly on different POSIX
-systems. We just need to know what platform you're on and how we can install it
-ourselves to move forward. Thanks!
+complain about a part of a structure in a syscall called `stat` which varies
+wildly on different POSIX systems. We just need to know what platform you're on
+and how we can install it ourselves to move forward. Thanks!
 
 ## Contributing
 
