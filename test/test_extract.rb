@@ -32,7 +32,7 @@ class TestExtract < ArchiveTestCase
 
   def test_obscene_multithreading
     %w[zip tar.gz tar.bz2].each do |ext|
-      thr = (1..30).map do
+      thr = (1..10).map do
         Thread.new do
           extract_tmp("test/data/libarchive.#{ext}")
         end

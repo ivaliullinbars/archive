@@ -69,7 +69,7 @@ class TestCompress < ArchiveTestCase
         { :type => :tar, :compression => :bzip2 },
         { :type => :zip }
       ].each do |args|
-        thr = (1..30).map do
+        thr = (1..10).map do
           Thread.new do
             extracted = nil
             Tempfile.open("archive-test") do |file|
