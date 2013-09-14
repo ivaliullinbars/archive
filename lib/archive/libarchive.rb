@@ -128,11 +128,13 @@ module Archive # :nodoc:
     attach_function :archive_read_support_format_tar, [:pointer], :void
     attach_function :archive_read_support_format_gnutar, [:pointer], :void
     attach_function :archive_read_support_format_zip, [:pointer], :void
+    attach_function :archive_read_support_format_iso9660, [:pointer], :void
 
     def self.enable_input_formats(arg) # :nodoc:
       archive_read_support_format_gnutar(arg)
       archive_read_support_format_zip(arg)
       archive_read_support_format_zip(arg)
+      archive_read_support_format_iso9660(arg)
       enable_input_compression(arg)
     end
 
