@@ -78,6 +78,10 @@ And these Rubies:
 
 It does not work on these platforms:
 
+* On OS X iso formats are unsupported. The version of libarchive distributed
+  with both 10.8 and 10.9 seems to have trouble with all iso derivatives.
+  Patches welcome for fixes!
+
 * SmartOS "base64 1.9.1". The version of libarchive they distribute via pkgsrc
 	is broken, see this URL: 
 
