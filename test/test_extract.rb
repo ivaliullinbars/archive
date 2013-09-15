@@ -20,7 +20,7 @@ class TestExtract < ArchiveTestCase
     formats = %w[zip tar.gz tar.bz2]
 
     unless ::FFI::Platform.mac?
-      formats += %[iso]
+      formats += %w[iso]
     end
 
     formats.each do |ext|
@@ -40,7 +40,7 @@ class TestExtract < ArchiveTestCase
     formats = %w[zip tar.gz tar.bz2]
 
     unless ::FFI::Platform.mac?
-      formats += %[iso]
+      formats += %w[iso]
     end
 
     formats.each do |ext|
