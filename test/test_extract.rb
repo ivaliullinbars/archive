@@ -17,7 +17,7 @@ class TestExtract < ArchiveTestCase
 
   def test_basic_extraction
     path = nil
-    %w[zip tar.gz tar.bz2].each do |ext|
+    %w[zip tar.gz tar.bz2 iso].each do |ext|
       path = extract_tmp("test/data/libarchive.#{ext}")
       full_dir = File.join(path, "libarchive")
       assert(File.directory?(full_dir))
@@ -31,7 +31,7 @@ class TestExtract < ArchiveTestCase
   end
 
   def test_obscene_multithreading
-    %w[zip tar.gz tar.bz2].each do |ext|
+    %w[zip tar.gz tar.bz2 iso].each do |ext|
       thr = (1..10).map do
         Thread.new do
           extract_tmp("test/data/libarchive.#{ext}")
