@@ -7,13 +7,13 @@ if ENV["COVERAGE"]
   end
 end
 
-require 'minitest/unit'
 require 'archive'
 require 'tempfile'
 require 'fileutils'
 require 'find'
+require 'minitest'
 
-class ArchiveTestCase < MiniTest::Unit::TestCase
+class ArchiveTestCase < MiniTest::Test
 
   def get_files(dir)
     files = []
