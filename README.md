@@ -9,6 +9,7 @@ common subset of archive types:
   * gzipped
   * bzip2'd
 * zip (uncompressed, binary-only)
+* iso9660 (read-only, and not on OS X)
 
 ## Installation
 
@@ -65,7 +66,7 @@ Tests require bundler. Run `bundle exec rake test` to run the tests.
 
 We have verified that archive works as intended on these platforms:
 
-* Mac OS X 10.8
+* Mac OS X 10.8, 10.9 (Except iso format)
 * Ubuntu Linux 12.04 LTS
 * FreeBSD 9
 
