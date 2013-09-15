@@ -1,3 +1,5 @@
+# 0.0.3 (09/15/2013)
+  * ISO support on linux systems -- Thanks David Lutterkort!
 # 0.0.2 (05/02/2013)
   * Better memory management; heap corruption issue that wasn't showing up in tests.
   * Fixes for FreeBSD 9
