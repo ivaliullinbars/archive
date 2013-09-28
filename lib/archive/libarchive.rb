@@ -78,6 +78,9 @@ module Archive # :nodoc:
     #--
     # this is necessary to pass rdoc's coverage tests
     #++
+    module RbConfig # :nodoc:
+    end
+
     module FFI # :nodoc:
       module Library # :nodoc:
       end
@@ -97,7 +100,7 @@ module Archive # :nodoc:
       def self.stat(*args) # :nodoc:
         stat64(*args)
       end
-    elsif RbConfig::CONFIG['host_os'] =~ /linux/
+    elsif ::RbConfig::CONFIG['host_os'] =~ /linux/
       attach_function :__xstat, [:int, :string, :pointer], :int
       def self.stat(*args) # :nodoc:
         __xstat(0, *args)
