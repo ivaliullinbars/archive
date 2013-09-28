@@ -17,11 +17,7 @@ class TestExtract < ArchiveTestCase
 
   def test_basic_extraction
     path = nil
-    formats = %w[zip tar.gz tar.bz2]
-
-    unless ::FFI::Platform.mac?
-      formats += %w[iso]
-    end
+    formats = %w[zip tar.gz tar.bz2 iso]
 
     formats.each do |ext|
       path = extract_tmp("test/data/libarchive.#{ext}")
@@ -37,11 +33,7 @@ class TestExtract < ArchiveTestCase
   end
 
   def test_obscene_multithreading
-    formats = %w[zip tar.gz tar.bz2]
-
-    unless ::FFI::Platform.mac?
-      formats += %w[iso]
-    end
+    formats = %w[zip tar.gz tar.bz2 iso]
 
     formats.each do |ext|
       thr = (1..10).map do
