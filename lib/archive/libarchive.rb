@@ -109,7 +109,20 @@ module Archive # :nodoc:
       attach_function :stat, [:string, :pointer], :int
     end
 
-    ffi_lib 'archive'
+
+    if ENV["LIBARCHIVE_PATH"]
+      ffi_lib ENV["LIBARCHIVE_PATH"]
+    elsif ::FFI::Platform.mac? and File.directory?('/usr/local/Cellar/libarchive')
+      latest = Dir['/usr/local/Cellar/libarchive/*'].
+        select { |x| File.directory?(x) }.
+        map { |x| File.basename(x) }.
+        sort.
+        last
+
+      ffi_lib "/usr/local/Cellar/libarchive/#{latest}/lib/libarchive.dylib"
+    else
+      ffi_lib 'archive'
+    end
 
     ARCHIVE_OK      = 0     # :nodoc:
     ARCHIVE_EOF     = 1     # :nodoc:
