@@ -9,7 +9,7 @@ common subset of archive types:
   * gzipped
   * bzip2'd
 * zip (uncompressed, binary-only)
-* iso9660 (read-only, and not on OS X)
+* iso9660 (read-only)
 
 ## Installation
 
@@ -66,7 +66,7 @@ Tests require bundler. Run `bundle exec rake test` to run the tests.
 
 We have verified that archive works as intended on these platforms:
 
-* Mac OS X 10.8, 10.9 (Except iso format)
+* Mac OS X 10.8, 10.9 (see notes on ISO support)
 * Ubuntu Linux 12.04 LTS
 * FreeBSD 9
 
@@ -78,16 +78,20 @@ And these Rubies:
 
 It does not work on these platforms:
 
-* On OS X iso formats are unsupported. The version of libarchive distributed
-  with both 10.8 and 10.9 seems to have trouble with all iso derivatives.
-  Patches welcome for fixes!
+* On OS X iso formats are only supported if you have a 3.x version of
+  libarchive, which OS X doesn't ship with. The code makes an attempt to pick
+  the latest homebrew libarchive, so if you use that packaging system, you can
+  `brew install libarchive` and it will "just work".
+  * Alternatively, you can set `LIBARCHIVE_PATH` in your environment to your
+    own build of libarchive 3.x which will also resolve this issue.
 
 * SmartOS "base64 1.9.1". The version of libarchive they distribute via pkgsrc
 	is broken, see this URL: 
 
   http://freebsd.1045724.n5.nabble.com/Extracting-tgz-file-Attempt-to-write-to-an-empty-file-td3910927.html
 
-  Regardless, installing a newer libarchive by hand will likely fix this issue.
+  Regardless, installing a newer libarchive by hand and setting
+  `LIBARCHIVE_PATH` in your environment will likely fix this issue.
 
 Please let us know if your operating system isn't working! It'll likely
 complain about a part of a structure in a syscall called `stat` which varies
