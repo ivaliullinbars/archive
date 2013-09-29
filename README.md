@@ -76,12 +76,13 @@ And these Rubies:
 * 2.0.0
 * JRuby 1.7 with Java 7
 
-It does not work on these platforms:
+Notes about the following platforms:
 
 * On OS X iso formats are only supported if you have a 3.x version of
   libarchive, which OS X doesn't ship with. The code makes an attempt to pick
-  the latest homebrew libarchive, so if you use that packaging system, you can
-  `brew install libarchive` and it will "just work".
+  the latest homebrew or macports libarchive, so if you use that packaging
+  system, you can `brew install libarchive` or `port install libarchive` and it
+  will "just work".
   * Alternatively, you can set `LIBARCHIVE_PATH` in your environment to your
     own build of libarchive 3.x which will also resolve this issue.
 
