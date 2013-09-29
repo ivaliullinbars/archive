@@ -120,6 +120,8 @@ module Archive # :nodoc:
         last
 
       ffi_lib "/usr/local/Cellar/libarchive/#{latest}/lib/libarchive.dylib"
+    elsif ::FFI::Platform.mac? and File.exist?('/opt/local/lib/libarchive.dylib')
+      ffi_lib '/opt/local/lib/libarchive.dylib'
     else
       ffi_lib 'archive'
     end
