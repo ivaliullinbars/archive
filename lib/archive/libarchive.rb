@@ -151,7 +151,6 @@ module Archive # :nodoc:
     def self.enable_input_formats(arg) # :nodoc:
       archive_read_support_format_gnutar(arg)
       archive_read_support_format_zip(arg)
-      archive_read_support_format_zip(arg)
       archive_read_support_format_iso9660(arg)
       enable_input_compression(arg)
     end
@@ -238,6 +237,7 @@ module Archive # :nodoc:
     attach_function :archive_write_data, [:pointer, :pointer, :size_t], :void
 
     attach_function :archive_entry_pathname, [:pointer], :string
+    attach_function :archive_entry_hardlink, [:pointer], :string
     attach_function :archive_entry_set_pathname, [:pointer, :string], :void
   end
 end

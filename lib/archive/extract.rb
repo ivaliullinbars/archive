@@ -75,16 +75,23 @@ module Archive # :nodoc:
         entry_pointer = @entry.get_pointer(0)
 
         full_path = File.join(@dir, LibArchive.archive_entry_pathname(entry_pointer))
-        LibArchive.archive_entry_set_pathname(entry_pointer, full_path)
-
-        # TODO return value maybe?
+        LibArchive.archive_entry_set_pathname(entry_pointer, File.expand_path(full_path))
         puts LibArchive.archive_entry_pathname(entry_pointer) if verbose
 
-        if ((result = LibArchive.archive_write_header(@out, entry_pointer)) != LibArchive::ARCHIVE_OK)
-          raise LibArchive.archive_error_string(@out)
-        end
+        if hardlink_path = LibArchive.archive_entry_hardlink(entry_pointer)
+          begin
+            File.link(File.expand_path(hardlink_path, @dir), full_path)
+          rescue Errno::EEXIST
+            File.unlink(full_path)
+            retry
+          end
+        else
+          if ((result = LibArchive.archive_write_header(@out, entry_pointer)) != LibArchive::ARCHIVE_OK)
+            raise LibArchive.archive_error_string(@out)
+          end
 
-        unpack_loop
+          unpack_loop
+        end
 
         LibArchive.archive_write_finish_entry(@out)
       end
