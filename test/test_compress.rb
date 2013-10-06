@@ -46,11 +46,11 @@ class TestCompress < ArchiveTestCase
           begin
             path = file.path
             file.close
-            compress_dir(path, "libarchive", args)
+            compress_dir(path, "test_archive", args)
             assert(File.exist?(path))
             assert(File.stat(path).size > 0)
             extracted = extract_tmp(path)
-            assert_no_difference("libarchive", File.join(extracted, "libarchive"))
+            assert_no_difference("test_archive", File.join(extracted, "test_archive"))
           ensure
             unless !extracted or extracted.empty? or extracted == '/' or extracted == Dir.pwd
               rm_rf(extracted)
@@ -75,7 +75,7 @@ class TestCompress < ArchiveTestCase
             Tempfile.open("archive-test") do |file|
               path = file.path
               file.close
-              compress_dir(path, "libarchive", args)
+              compress_dir(path, "test_archive", args)
               assert(File.exist?(path))
               assert(File.stat(path).size > 0)
               extracted = extract_tmp(path)
@@ -89,7 +89,7 @@ class TestCompress < ArchiveTestCase
         begin
           thr.each do |t|
             path = t.value
-            assert_no_difference("libarchive", File.join(path, "libarchive"))
+            assert_no_difference("test_archive", File.join(path, "test_archive"))
             rm_rf(path)
           end
         ensure

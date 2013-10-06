@@ -9,9 +9,9 @@ class TestExtract < ArchiveTestCase
 
   def test_constructor
     assert_raises(ArgumentError) { @klass.new("/nonexistent.tar.gz", "/") }
-    assert_raises(ArgumentError) { @klass.new("test/data/libarchive.zip", "/nonexistent") }
-    obj = @klass.new("test/data/libarchive.zip", Dir.pwd)
-    assert_equal("test/data/libarchive.zip", obj.filename)
+    assert_raises(ArgumentError) { @klass.new("test/data/test.zip", "/nonexistent") }
+    obj = @klass.new("test/data/test.zip", Dir.pwd)
+    assert_equal("test/data/test.zip", obj.filename)
     assert_equal(Dir.pwd, obj.dir)
   end
 
@@ -20,10 +20,9 @@ class TestExtract < ArchiveTestCase
     formats = %w[zip tar.gz tar.bz2 iso]
 
     formats.each do |ext|
-      path = extract_tmp("test/data/libarchive.#{ext}")
-      full_dir = File.join(path, "libarchive")
-      assert(File.directory?(full_dir))
-      assert_no_difference(full_dir, "test/data/libarchive")
+      path = extract_tmp("test/data/test.#{ext}")
+      assert(File.directory?(path))
+      assert_no_difference(path, "test/data/test_archive")
       rm_rf(path)
     end
   ensure
@@ -38,7 +37,7 @@ class TestExtract < ArchiveTestCase
     formats.each do |ext|
       thr = (1..10).map do
         Thread.new do
-          extract_tmp("test/data/libarchive.#{ext}")
+          extract_tmp("test/data/test.#{ext}")
         end
       end
 
@@ -48,9 +47,8 @@ class TestExtract < ArchiveTestCase
         begin
           path = t.value
           assert(path)
-          full_dir = File.join(path, "libarchive")
-          assert(File.directory?(full_dir))
-          assert_no_difference("test/data/libarchive", full_dir)
+          assert(File.directory?(path))
+          assert_no_difference("test/data/test_archive", path)
         ensure
           unless !path or path.empty? or path == '/' or path == Dir.pwd
             rm_rf(path)

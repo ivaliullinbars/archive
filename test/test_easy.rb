@@ -21,11 +21,11 @@ class TestEasy < ArchiveTestCase
             path = file.path
             file.close
 
-            Archive.compress(path, "libarchive", args)
+            Archive.compress(path, "test_archive", args)
             assert(File.exist?(path))
             assert(File.stat(path).size > 0)
             extracted = extract_tmp(path)
-            assert_no_difference("libarchive", File.join(extracted, "libarchive"))
+            assert_no_difference("test_archive", File.join(extracted, "test_archive"))
           ensure
             unless !extracted or extracted.empty? or extracted == '/' or extracted == Dir.pwd
               rm_rf(extracted)
@@ -51,14 +51,14 @@ class TestEasy < ArchiveTestCase
 
             orig_out = $stdout
             $stdout = StringIO.new('', 'w')
-            Archive.compress_and_print(path, "libarchive", args)
+            Archive.compress_and_print(path, "test_archive", args)
             output = $stdout.string
             $stdout = orig_out
             assert(File.exist?(path))
             assert(File.stat(path).size > 0)
             refute_empty(output)
             extracted = extract_tmp(path)
-            assert_no_difference("libarchive", File.join(extracted, "libarchive"))
+            assert_no_difference("test_archive", File.join(extracted, "test_archive"))
           ensure
             unless !extracted or extracted.empty? or extracted == '/' or extracted == Dir.pwd
               rm_rf(extracted)
@@ -79,10 +79,9 @@ class TestEasy < ArchiveTestCase
 
       %w[zip tar.gz tar.bz2].each do |ext|
         path = Dir.mktmpdir
-        Archive.extract("test/data/libarchive.#{ext}", path)
-        full_dir = File.join(path, "libarchive")
-        assert(File.directory?(full_dir))
-        assert_no_difference(full_dir, "test/data/libarchive")
+        Archive.extract("test/data/test.#{ext}", path)
+        assert(File.directory?(path))
+        assert_no_difference(path, "test/data/test_archive")
         rm_rf(path)
       end
     ensure
@@ -101,12 +100,11 @@ class TestEasy < ArchiveTestCase
         path = Dir.mktmpdir
         orig_out = $stdout
         $stdout = StringIO.new('', 'w')
-        Archive.extract_and_print("test/data/libarchive.#{ext}", path)
+        Archive.extract_and_print("test/data/test.#{ext}", path)
         output = $stdout.string
         $stdout = orig_out
-        full_dir = File.join(path, "libarchive")
-        assert(File.directory?(full_dir))
-        assert_no_difference(full_dir, "test/data/libarchive")
+        assert(File.directory?(path))
+        assert_no_difference(path, "test/data/test_archive")
         refute_empty(output)
         rm_rf(path)
       end
