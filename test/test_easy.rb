@@ -77,7 +77,7 @@ class TestEasy < ArchiveTestCase
     begin
       path = nil
 
-      %w[zip tar.gz tar.bz2].each do |ext|
+      %w[iso zip tar.gz tar.bz2].each do |ext|
         path = Dir.mktmpdir
         Archive.extract("test/data/test.#{ext}", path)
         assert(File.directory?(path))
@@ -96,7 +96,7 @@ class TestEasy < ArchiveTestCase
       path = nil
       orig_out = nil
 
-      %w[zip tar.gz tar.bz2].each do |ext|
+      %w[iso zip tar.gz tar.bz2].each do |ext|
         path = Dir.mktmpdir
         orig_out = $stdout
         $stdout = StringIO.new('', 'w')
