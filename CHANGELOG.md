@@ -1,3 +1,7 @@
+# 0.0.4 (10/10/2013)
+  * Several fixes around hardlinks.
+  * Better support for OS X! Will use homebrew or macports' libarchive if
+    available so you can use a recent version.
 # 0.0.3 (09/15/2013)
   * ISO support on linux systems -- Thanks David Lutterkort!
 # 0.0.2 (05/02/2013)
