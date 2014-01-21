@@ -88,6 +88,14 @@ module Archive # :nodoc:
 
     extend ::FFI::Library # :nodoc:
 
+    def self.linked_archive_library
+      @linked_archive_library
+    end
+
+    def self.linked_archive_library=(val)
+      @linked_archive_library = val
+    end
+
     #
     # needed by archiving entry functions
     #
@@ -109,9 +117,8 @@ module Archive # :nodoc:
       attach_function :stat, [:string, :pointer], :int
     end
 
-
     if ENV["LIBARCHIVE_PATH"]
-      ffi_lib ENV["LIBARCHIVE_PATH"]
+      self.linked_archive_library = ENV["LIBARCHIVE_PATH"]
     elsif ::FFI::Platform.mac? and File.directory?('/usr/local/Cellar/libarchive')
       latest = Dir['/usr/local/Cellar/libarchive/*'].
         select { |x| File.directory?(x) }.
@@ -119,12 +126,14 @@ module Archive # :nodoc:
         sort.
         last
 
-      ffi_lib "/usr/local/Cellar/libarchive/#{latest}/lib/libarchive.dylib"
+      self.linked_archive_library = "/usr/local/Cellar/libarchive/#{latest}/lib/libarchive.dylib"
     elsif ::FFI::Platform.mac? and File.exist?('/opt/local/lib/libarchive.dylib')
-      ffi_lib '/opt/local/lib/libarchive.dylib'
+      self.linked_archive_library = '/opt/local/lib/libarchive.dylib'
     else
-      ffi_lib 'archive'
+      self.linked_archive_library = 'archive'
     end
+
+    ffi_lib self.linked_archive_library
 
     ARCHIVE_OK      = 0     # :nodoc:
     ARCHIVE_EOF     = 1     # :nodoc:
