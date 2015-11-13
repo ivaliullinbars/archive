@@ -130,7 +130,7 @@ module Archive # :nodoc:
     elsif ::FFI::Platform.mac? and File.exist?('/opt/local/lib/libarchive.dylib')
       self.linked_archive_library = '/opt/local/lib/libarchive.dylib'
     else
-      self.linked_archive_library = 'archive'
+      self.linked_archive_library = ['archive', 'libarchive.so.13']
     end
 
     ffi_lib self.linked_archive_library
