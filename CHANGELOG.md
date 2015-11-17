@@ -1,3 +1,5 @@
+# 0.0.7 (11/13/2015)
+  * Propoer ffi_lib include -- patch by tboerger
 # 0.0.6 (03/08/2014)
   * Upgrade FFI to 1.9.3 -- patch by esbeka
 # 0.0.5 (01/21/2014)
